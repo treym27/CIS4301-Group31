@@ -3,8 +3,8 @@
 use Silex\Application;
 use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\HttpFragmentServiceProvider;
+use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\DoctrineServiceProvider;
 
 $app = new Application();
 $app->register(new AssetServiceProvider());
