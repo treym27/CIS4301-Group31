@@ -43,7 +43,7 @@ oci_free_statement($statement);
 // generate accounts from the names file
 echo "[*] Inserting users\n";
 $count = 0;
-$name_file = fopen("male_names.txt", "r") or die("Unable to open file!\n");
+$name_file = fopen("scripts/data/male_names.txt", "r") or die("Unable to open file!\n");
 while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     echo "\r\t[*] Insert #".(++$count);
     $insert_cmd = "insert into account values('".$fname.".".$lname."@gmail.com', '";
@@ -64,7 +64,7 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
 }
 fclose($name_file);
 // female names
-$name_file = fopen("female_names.txt", "r") or die("Unable to open file!\n");
+$name_file = fopen("scripts/data/female_names.txt", "r") or die("Unable to open file!\n");
 while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     echo "\r\t[*] Insert #".(++$count);
     $insert_cmd = "insert into account values('".$fname.".".$lname."@gmail.com', '";

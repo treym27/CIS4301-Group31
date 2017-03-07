@@ -6,13 +6,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-//Request::setTrustedProxies(array('127.0.0.1'));
-
 $app->get('/', function () use ($app) {
+    $sql = "select * from account";
+    $rows = $app['db']->fetchAll($sql);
+    var_dump($rows);
+
     return $app['twig']->render('index.html.twig', array());
-})
-->bind('homepage')
-;
+})->bind('homepage');
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
