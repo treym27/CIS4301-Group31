@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 $app->get('/', function () use ($app) {
     $sql = "select * from account";
     $rows = $app['db']->fetchAll($sql);
-    var_dump($rows);
+    $app['monolog']->info(sprintf("found %d accounts.", count($rows)));
 
     return $app['twig']->render('index.html.twig', array());
 })->bind('homepage');
