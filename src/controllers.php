@@ -19,9 +19,11 @@ $app->get('/admin', function () use ($app) {
     return $app['twig']->render('index.html.twig');
 });
 
-$app->get('/admin/logout', function () use ($app) {
-    $app['security.token_storage']->setToken(null);
-    return $app->redirect('/');
+$app->get('/login', function (Request $request) use ($app) {
+    return $app['twig']->render('login.html.twig', array(
+        'error' => $app['security.last_error']($request),
+        'last_username' => $app['session']->get('_security.last_username'),
+    ));
 });
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
