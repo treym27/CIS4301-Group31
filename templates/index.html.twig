@@ -1,5 +1,18 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    Welcome to your new Silex Application!
+  <div class="page-content">
+    Hello world!
+  </div>
+{% endblock %}
+
+{# this is just an example for how to use mdl-grid #}
+{% block dontshow %}
+  <div class="page-content">
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col">TEST</div>
+      <div class="mdl-cell mdl-cell--4-col">TEST</div>
+      <div class="mdl-cell mdl-cell--4-col">TEST</div>
+    </div>
+  </div>
 {% endblock %}
