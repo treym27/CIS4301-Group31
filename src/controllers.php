@@ -19,6 +19,11 @@ $app->get('/admin', function () use ($app) {
     return $app['twig']->render('index.html.twig');
 });
 
+$app->get('/admin/logout', function () use ($app) {
+    $app['security.token_storage']->setToken(null);
+    return $app->redirect('/');
+});
+
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
         return;

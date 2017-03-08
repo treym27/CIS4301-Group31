@@ -57,3 +57,7 @@ $app['security.firewalls'] = array(
         },
     ),
 );
+
+// $app['security.access_rules'] = array(
+//     ['^/admin$', 'ROLE_ADMIN'],
+// );
