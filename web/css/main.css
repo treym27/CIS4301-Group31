@@ -3,3 +3,7 @@
     margin: auto;
     padding-top: 30px;
 }
+
+.login-error {
+    color: #ff0000;
+}
