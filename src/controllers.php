@@ -7,12 +7,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 $app->get('/', function () use ($app) {
-    $sql = "select * from account";
-    $rows = $app['db']->fetchAll($sql);
-    $app['monolog']->info(sprintf("found %d accounts.", count($rows)));
+    // This was just testing to make sure the database works
+    // $sql = "select * from account";
+    // $rows = $app['db']->fetchAll($sql);
+    // $app['monolog']->info(sprintf("found %d accounts.", count($rows)));
 
-    return $app['twig']->render('index.html.twig', array());
+    return $app['twig']->render('index.html.twig');
 })->bind('homepage');
+
+$app->get('/admin', function () use ($app) {
+    return $app['twig']->render('index.html.twig');
+});
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {

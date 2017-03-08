@@ -16,3 +16,6 @@ $app['db.options'] = array (
     "dbname"    =>  getenv("DBSID")
 );
 
+// configure the symfony security firewall
+require __DIR__.'/firewall.php';
+
