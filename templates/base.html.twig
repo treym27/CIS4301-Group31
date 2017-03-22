@@ -29,9 +29,11 @@
 
           <!-- just a place to show login info, won't be seen on small screens -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <!-- if not logged in -->
-            <a class="mdl-navigation__link" href="#">Login</a>
-            <!-- else show a link to the profile page -->
+            {% if not global.user %}
+              <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
+            {% else %}
+              <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
+            {% endif %}
           </nav>
         </div>
       </header>
@@ -40,9 +42,11 @@
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Banking App</span>
         <nav class="mdl-navigation">
-          <!-- login if not logged in -->
-          <a class="mdl-navigation__link" href="#">Login</a>
-          <!-- else show all possible links -->
+          {% if not global.user %}
+            <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
+          {% else %}
+            <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
+          {% endif %}
         </nav>
       </div>
 

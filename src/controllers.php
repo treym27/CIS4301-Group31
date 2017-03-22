@@ -24,7 +24,7 @@ $app->get('/login', function (Request $request) use ($app) {
         'error' => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));
-});
+})->bind('login');
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
