@@ -12,12 +12,22 @@ $app->get('/', function () use ($app) {
     // $rows = $app['db']->fetchAll($sql);
     // $app['monolog']->info(sprintf("found %d accounts.", count($rows)));
 
+    $app['monolog']->info('[/] pre-token check');
+    $token = $app['security.token_storage']->getToken();
+    if ($token !== null) {
+        $app['monolog']->info('[/] found a login');
+        if ($app['security.authorization_checker']->isGranted('ROLE_ADMIN')) {
+            $app['monolog']->info('[/] redirecting to admin');
+            $app->redirect(url('admin'));
+        }
+    }
+
     return $app['twig']->render('index.html.twig');
 })->bind('homepage');
 
 $app->get('/admin', function () use ($app) {
     return $app['twig']->render('index.html.twig');
-});
+})->bind('admin');
 
 $app->get('/login', function (Request $request) use ($app) {
     return $app['twig']->render('login.html.twig', array(
