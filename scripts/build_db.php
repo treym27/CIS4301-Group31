@@ -103,10 +103,19 @@ while (($row = oci_fetch_object($statement)) != false) {
         continue;
 
     echo "\r\t[*] Transactions #".++$trans_count;
-    for ($i = 0; $i < 200; $i++) {
-        $tstate = oci_parse($connection, "insert into transactions values(seq_transaction.nextval, )");
-        oci_execute($tstate);
-        oci_free_statement($tstate);
+    // 2 times a month, 12 months, 6 years
+    $salary = mt_rand(500,2000);
+    for ($i = 0; $i < 12*6; $i++) {
+        $t0 = "insert into transaction values(seq_transaction.nextval, TIMESTAMP '";
+        $t1 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'Salary Payment', 'complete', ";
+        $t0 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(7)." 00:00:00.00', 'Salary Payment', 'complete', ";
+        $t0 = $t0.$salary.")";
+        $t1 = $t1.$salary.")";
+        echo $t0."\n";
+        echo $t0."\n";
+        // $tstate = oci_parse($connection, );
+        // oci_execute($tstate);
+        // oci_free_statement($tstate);
     }
 }
 echo "\n";
