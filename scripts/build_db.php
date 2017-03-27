@@ -35,7 +35,7 @@ if ($argc >= 2 && $argv[1] == "delete") {
 // insert the administrator into the database first
 echo "[*] Inserting admin\n";
 $admin_pwd = password_hash("admin", PASSWORD_DEFAULT);
-$admin_insert = "insert into account values('admin', '".$admin_pwd."', 'administrator', '000-00-0000', '1-JAN-2017', '1-JAN-2017', 0, 'a', 1, 0, 'genderless')";
+$admin_insert = "insert into account values('admin', '".$admin_pwd."', 'administrator', '000-00-0000', '1-JAN-2017', '1-JAN-2017', 0, 's', 'c', 'ST', 1, 0, 'genderless')";
 $statement = oci_parse($connection, $admin_insert);
 oci_execute($statement);
 oci_free_statement($statement);
@@ -53,7 +53,9 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(1950,2000)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(2015,2017)."', ";
     $insert_cmd = $insert_cmd."0, '";
-    $insert_cmd = $insert_cmd."address', ";
+    $insert_cmd = $insert_cmd."street', '";
+    $insert_cmd = $insert_cmd."city', '";
+    $insert_cmd = $insert_cmd."ST', ";
     $insert_cmd = $insert_cmd."0, ";
     $insert_cmd = $insert_cmd.mt_rand(1000000000,9999999999).", '";
     $insert_cmd = $insert_cmd."male')";
@@ -74,7 +76,9 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(1950,2000)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(2015,2017)."', ";
     $insert_cmd = $insert_cmd."0, '";
-    $insert_cmd = $insert_cmd."address', ";
+    $insert_cmd = $insert_cmd."street', '";
+    $insert_cmd = $insert_cmd."city', '";
+    $insert_cmd = $insert_cmd."ST', ";
     $insert_cmd = $insert_cmd."0, ";
     $insert_cmd = $insert_cmd.mt_rand(1000000000,9999999999).", '";
     $insert_cmd = $insert_cmd."female')";
