@@ -26,8 +26,12 @@ if (! $connection) {
 if ($argc >= 2 && $argv[1] == "delete") {
     $statement = oci_parse($connection, "delete from account");
     oci_execute($statement);
-    echo "[*] Database deleted\n";
     oci_free_statement($statement);
+    $statement = oci_parse($connection, "delete from transaction");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    // should reset the sequence counter here
+    echo "[*] Database deleted\n";
     oci_close($connection);
     exit();
 }
@@ -89,6 +93,24 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
 }
 fclose($name_file);
 echo "\n";
+
+$statement = oci_parse($connection, "select email_address from account");
+oci_execute($statement);
+$trans_count = 0;
+echo "[*] Inserting transactions\n";
+while (($row = oci_fetch_object($statement)) != false) {
+    if ($row->EMAIL_ADDRESS === 'admin')
+        continue;
+
+    echo "\r\t[*] Transactions #".++$trans_count;
+    for ($i = 0; $i < 200; $i++) {
+        $tstate = oci_parse($connection, "insert into transactions values(seq_transaction.nextval, )");
+        oci_execute($tstate);
+        oci_free_statement($tstate);
+    }
+}
+echo "\n";
+oci_free_statement($statement);
 
 // check to see what is in the database
 $statement = oci_parse($connection, "select * from account");
