@@ -39,6 +39,12 @@ if ($argc >= 2 && $argv[1] == "delete") {
     $statement = oci_parse($connection, "create sequence seq_transaction minvalue 1 start with 1 increment by 1 cache 10");
     oci_execute($statement);
     oci_free_statement($statement);
+    $statement = oci_parse($connection, "drop sequence seq_sm");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "create sequence seq_sm minvalue 1 start with 1 increment by 1 cache 10");
+    oci_execute($statement);
+    oci_free_statement($statement);
     echo "[*] Database deleted\n";
     oci_close($connection);
     exit();
