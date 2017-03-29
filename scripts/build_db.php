@@ -111,6 +111,7 @@ echo "\n";
 $statement = oci_parse($connection, "select email_address from account");
 oci_execute($statement);
 $trans_count = 0;
+$sm_count = 0;
 echo "[*] Inserting transactions\n";
 while (($row = oci_fetch_object($statement)) != false) {
     if ($row->EMAIL_ADDRESS === 'admin')
@@ -118,6 +119,7 @@ while (($row = oci_fetch_object($statement)) != false) {
 
     // 2 times a month, 12 months, 6 years
     $salary = mt_rand(500,2000);
+    $rent = mt_rand(500,1000);
     for ($i = 0; $i < 12*6; $i++) {
         $t0 = "insert into transaction values(seq_transaction.nextval, TIMESTAMP '";
         $t1 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'Salary Payment', 'complete', ";
@@ -126,17 +128,42 @@ while (($row = oci_fetch_object($statement)) != false) {
         $t1 = $t1.intval($salary*(1+(0.02*intval($i/6)))).")";
         // echo $t0."\n";
         // echo $t0."\n";
+
+        // first salary payment
         $tstate = oci_parse($connection, $t0);
         oci_execute($tstate);
         echo "\r\t[*] Transactions #".++$trans_count;
         $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
         oci_execute($tstate);
-        $tstate = oci_parse($connection, $t1);
+
+        // generate a random number to decide if we should social media post
+        if (mt_rand(1,100) <= 10) {
+            $sm_count++;
+            $sm = "insert into social_media_post values(seq_sm.nextval, TIMESTAMP '".intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'I just got paid!!!!')";
+            $smstate = oci_parse($connection, $sm);
+            oci_execute($smstate);
+
+            $tstate = oci_parse($connection, $t1);
+            oci_execute($tstate);
+            echo "\r\t[*] Trans+smpost #".++$trans_count;
+            $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", ".$sm_count.")");
+            oci_execute($tstate);
+        } else {
+            $tstate = oci_parse($connection, $t1);
+            oci_execute($tstate);
+            echo "\r\t[*] Transactions #".++$trans_count;
+            $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+            oci_execute($tstate);
+        }
+
+        // rent payment
+        $tstate = oci_parse($connection, "insert into transaction values(seq_transaction.nextval, TIMESTAMP '".intval(2005+($i/6))."-".($i%12 + 1)."-".(1)." 00:00:00.00', 'Rent Payment', 'complete', ".$rent.")");
         oci_execute($tstate);
         echo "\r\t[*] Transactions #".++$trans_count;
-        $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+        $tstate = oci_parse($connection, "insert into makes values('".$row->EMAIL_ADDRESS."', 'admin', ".$trans_count.", null)");
         oci_execute($tstate);
         oci_free_statement($tstate);
+
     }
 }
 echo "\n";
