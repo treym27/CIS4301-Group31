@@ -24,13 +24,21 @@ if (! $connection) {
 
 // check for command line arg about deleting
 if ($argc >= 2 && $argv[1] == "delete") {
+    $statement = oci_parse($connection, "delete from makes");
+    oci_execute($statement);
+    oci_free_statement($statement);
     $statement = oci_parse($connection, "delete from account");
     oci_execute($statement);
     oci_free_statement($statement);
     $statement = oci_parse($connection, "delete from transaction");
     oci_execute($statement);
     oci_free_statement($statement);
-    // should reset the sequence counter here
+    $statement = oci_parse($connection, "drop sequence seq_transaction");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "create sequence seq_transaction minvalue 1 start with 1 increment by 1 cache 10");
+    oci_execute($statement);
+    oci_free_statement($statement);
     echo "[*] Database deleted\n";
     oci_close($connection);
     exit();
@@ -56,7 +64,10 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     $insert_cmd = $insert_cmd.mt_rand(100,999)."-".mt_rand(10,99)."-".mt_rand(1000,9999)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(1950,2000)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(2015,2017)."', ";
-    $insert_cmd = $insert_cmd."0, '";
+    if (mt_rand(1,100) === 50)
+        $insert_cmd = $insert_cmd."1, '";
+    else
+        $insert_cmd = $insert_cmd."0, '";
     $insert_cmd = $insert_cmd."street', '";
     $insert_cmd = $insert_cmd."city', '";
     $insert_cmd = $insert_cmd."ST', ";
@@ -79,7 +90,10 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     $insert_cmd = $insert_cmd.mt_rand(100,999)."-".mt_rand(10,99)."-".mt_rand(1000,9999)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(1950,2000)."', '";
     $insert_cmd = $insert_cmd.mt_rand(1,31)."-JAN-".mt_rand(2015,2017)."', ";
-    $insert_cmd = $insert_cmd."0, '";
+    if (mt_rand(1,100) === 50)
+        $insert_cmd = $insert_cmd."1, '";
+    else
+        $insert_cmd = $insert_cmd."0, '";
     $insert_cmd = $insert_cmd."street', '";
     $insert_cmd = $insert_cmd."city', '";
     $insert_cmd = $insert_cmd."ST', ";
@@ -102,20 +116,27 @@ while (($row = oci_fetch_object($statement)) != false) {
     if ($row->EMAIL_ADDRESS === 'admin')
         continue;
 
-    echo "\r\t[*] Transactions #".++$trans_count;
     // 2 times a month, 12 months, 6 years
     $salary = mt_rand(500,2000);
     for ($i = 0; $i < 12*6; $i++) {
         $t0 = "insert into transaction values(seq_transaction.nextval, TIMESTAMP '";
         $t1 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'Salary Payment', 'complete', ";
         $t0 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(7)." 00:00:00.00', 'Salary Payment', 'complete', ";
-        $t0 = $t0.$salary.")";
-        $t1 = $t1.$salary.")";
-        echo $t0."\n";
-        echo $t0."\n";
-        // $tstate = oci_parse($connection, );
-        // oci_execute($tstate);
-        // oci_free_statement($tstate);
+        $t0 = $t0.intval($salary*(1+(0.02*intval($i/6)))).")";
+        $t1 = $t1.intval($salary*(1+(0.02*intval($i/6)))).")";
+        // echo $t0."\n";
+        // echo $t0."\n";
+        $tstate = oci_parse($connection, $t0);
+        oci_execute($tstate);
+        echo "\r\t[*] Transactions #".++$trans_count;
+        $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+        oci_execute($tstate);
+        $tstate = oci_parse($connection, $t1);
+        oci_execute($tstate);
+        echo "\r\t[*] Transactions #".++$trans_count;
+        $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+        oci_execute($tstate);
+        oci_free_statement($tstate);
     }
 }
 echo "\n";
