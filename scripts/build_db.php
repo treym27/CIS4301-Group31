@@ -27,6 +27,18 @@ if ($argc >= 2 && $argv[1] == "delete") {
     $statement = oci_parse($connection, "delete from makes");
     oci_execute($statement);
     oci_free_statement($statement);
+    $statement = oci_parse($connection, "delete from likes");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "delete from is_friends_with");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "delete from posts");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "delete from reply");
+    oci_execute($statement);
+    oci_free_statement($statement);
     $statement = oci_parse($connection, "delete from account");
     oci_execute($statement);
     oci_free_statement($statement);
@@ -120,7 +132,8 @@ echo "\n";
 $sm_text = array(
     "I just got paid!!!!",
     "Money Money Money!!!!",
-    "pay day!!!"
+    "pay day!!!",
+    "Would you like to build a snowman?"
 );
 $sm_text_size = count($sm_text)-1;
 
@@ -138,12 +151,12 @@ while (($row = oci_fetch_object($statement)) != false) {
     ++$acc_count;
     $salary = mt_rand(500,2000);
     $rent = mt_rand(500,1000);
-    for ($i = 0; $i < 12*6; $i++) {
+    for ($i = 0; $i < 12*3; $i++) {
         $t0 = "insert into transaction values(seq_transaction.nextval, TIMESTAMP '";
-        $t1 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'Salary Payment', 'complete', ";
-        $t0 = $t0.intval(2005+($i/6))."-".($i%12 + 1)."-".(7)." 00:00:00.00', 'Salary Payment', 'complete', ";
-        $t0 = $t0.intval($salary*(1+(0.02*intval($i/6)))).")";
-        $t1 = $t1.intval($salary*(1+(0.02*intval($i/6)))).")";
+        $t1 = $t0.intval(2005+($i/3))."-".($i%12 + 1)."-".(21)." 00:00:00.00', 'Salary Payment', 'complete', ";
+        $t0 = $t0.intval(2005+($i/3))."-".($i%12 + 1)."-".(7)." 00:00:00.00', 'Salary Payment', 'complete', ";
+        $t0 = $t0.intval($salary*(1+(0.02*intval($i/3)))).")";
+        $t1 = $t1.intval($salary*(1+(0.02*intval($i/3)))).")";
         // echo $t0."\n";
         // echo $t0."\n";
 
@@ -157,7 +170,7 @@ while (($row = oci_fetch_object($statement)) != false) {
         // generate a random number to decide if we should social media post
         if (mt_rand(1,100) <= 10) {
             $sm_count++;
-            $sm = "insert into social_media_post values(seq_sm.nextval, TIMESTAMP '".intval(2005+($i/6))."-".($i%12 + 1)."-".(21)." 00:00:00.00', '".$sm_text[mt_rand(0,$sm_text_size)]."')";
+            $sm = "insert into social_media_post values(seq_sm.nextval, TIMESTAMP '".intval(2005+($i/3))."-".($i%12 + 1)."-".(21)." 00:00:00.00', '".$sm_text[mt_rand(0,$sm_text_size)]."')";
             $smstate = oci_parse($connection, $sm);
             oci_execute($smstate);
 
@@ -175,7 +188,7 @@ while (($row = oci_fetch_object($statement)) != false) {
         }
 
         // rent payment
-        $tstate = oci_parse($connection, "insert into transaction values(seq_transaction.nextval, TIMESTAMP '".intval(2005+($i/6))."-".($i%12 + 1)."-".(1)." 00:00:00.00', 'Rent Payment', 'complete', ".$rent.")");
+        $tstate = oci_parse($connection, "insert into transaction values(seq_transaction.nextval, TIMESTAMP '".intval(2005+($i/3))."-".($i%12 + 1)."-".(1)." 00:00:00.00', 'Rent Payment', 'complete', ".$rent.")");
         oci_execute($tstate);
         echo "\r\t[*] ".++$trans_count." ".$acc_count." ".$sm_count;
         $tstate = oci_parse($connection, "insert into makes values('".$row->EMAIL_ADDRESS."', 'admin', ".$trans_count.", null)");
@@ -186,6 +199,26 @@ while (($row = oci_fetch_object($statement)) != false) {
 }
 echo "\n";
 oci_free_statement($statement);
+
+echo "[*] Inserting likes and friends\n";
+$statement = oci_parse($connection, "select email_address from account where email_address != 'admin'");
+oci_execute($statement);
+$people_size = oci_fetch_all($statement, $people);
+oci_free_statement($statement);
+$statement = oci_parse($connection, "select id from social_media_post");
+oci_execute($statement);
+$smposts_size = oci_fetch_all($statement, $smposts);
+oci_free_statement($statement);
+for ($i = 0; $i < 25000; $i++) {
+    $p0 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
+    $p1 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
+    while($p1 === $p0)
+        $p1 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
+    $s0 = oci_parse($connection, "insert into is_friends_with values('".$p0."', '".$p1."')");
+    oci_execute($s0);
+    oci_free_statement($s0);
+}
+echo "\n";
 
 // check to see what is in the database
 $statement = oci_parse($connection, "select * from account");
