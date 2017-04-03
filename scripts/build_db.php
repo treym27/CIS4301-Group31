@@ -210,7 +210,7 @@ $statement = oci_parse($connection, "select id from social_media_post");
 oci_execute($statement);
 $smposts_size = oci_fetch_all($statement, $smposts);
 oci_free_statement($statement);
-for ($i = 0; $i < 5000; $i++) {
+for ($i = 0; $i < 10000; $i++) {
     $p0 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
     $p1 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
     while($p1 === $p0)
