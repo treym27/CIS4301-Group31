@@ -79,6 +79,7 @@ CREATE TABLE Makes
 );
 
 create sequence seq_transaction minvalue 1 start with 1 increment by 1 cache 10;
+create sequence seq_sm minvalue 1 start with 1 increment by 1 cache 10;
 
 -- drop table Makes;
 -- drop table Posts;
@@ -89,4 +90,5 @@ create sequence seq_transaction minvalue 1 start with 1 increment by 1 cache 10;
 -- drop table is_friends_with;
 -- drop table Account;
 -- drop sequence seq_transaction;
+-- drop sequence seq_sm;
 
