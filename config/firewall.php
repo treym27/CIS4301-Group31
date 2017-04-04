@@ -49,6 +49,14 @@ class UserProvider implements UserProviderInterface
 }
 
 $app['security.firewalls'] = array(
+    'user' => array (
+        'pattern' => '^/user',
+        'form' => array('login_path' => '/login', 'check_path' => '/user/check'),
+        'logout' => array('logout_path' => '/user/logout', 'invalidate_session' => true),
+        'users' => function () use ($app) {
+            return new UserProvider($app['db']);
+        },
+    ),
     'admin' => array (
         'pattern' => '^/admin',
         'form' => array('login_path' => '/login', 'check_path' => '/admin/check'),
