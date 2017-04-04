@@ -28,7 +28,9 @@ $app->get('/', function () use ($app) {
 
 // the admin home page
 $app->get('/admin', function () use ($app) {
-    return $app['twig']->render('index.html.twig');
+    $avg_gender = $app['db']->fetchAll("select gender,avg(value),stddev(value) from account,makes,transaction where account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender");
+    var_dump($avg_gender);
+    return $app['twig']->render('admin_home.html.twig');
 })->bind('admin_home');
 
 // admin search page
