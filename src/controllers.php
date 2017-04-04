@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+// general home page
 $app->get('/', function () use ($app) {
     // This was just testing to make sure the database works
     // $sql = "select * from account";
@@ -25,10 +26,37 @@ $app->get('/', function () use ($app) {
     return $app['twig']->render('index.html.twig');
 })->bind('homepage');
 
+// the admin home page
 $app->get('/admin', function () use ($app) {
     return $app['twig']->render('index.html.twig');
-})->bind('admin');
+})->bind('admin_home');
 
+// admin search page
+$app->get('/admin/search', function () use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('admin_search');
+
+// user home page
+$app->get('/user', function () use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('user_home');
+
+// user timeline
+$app->get('/user/timeline', function () use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('user_timeline');
+
+// user profile page
+$app->get('/user/{email}', function ($email) use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('user_profile');
+
+// user edit page (can only view your own, or admin can view all)
+$app->get('/user/edit/{email}', function ($email) use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('user_edit');
+
+// login page
 $app->get('/login', function (Request $request) use ($app) {
     return $app['twig']->render('login.html.twig', array(
         'error' => $app['security.last_error']($request),
@@ -36,6 +64,7 @@ $app->get('/login', function (Request $request) use ($app) {
     ));
 })->bind('login');
 
+// error handler
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
         return;
