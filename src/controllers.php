@@ -28,8 +28,12 @@ $app->get('/', function () use ($app) {
 
 // the admin home page
 $app->get('/admin', function () use ($app) {
-    $avg_gender = $app['db']->fetchAll("select gender,avg(value),stddev(value) from account,makes,transaction where account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender");
+    $avg_gender = $app['db']->fetchAll("select gender,avg(value) as avg,stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender");
     var_dump($avg_gender);
+    $liked = $app['db']->fetchAll("select smid, who, text, count(distinct who) from likes,social_media_post where likes.smid = social_media_post.id group by smid, who, text order by count(distinct who) desc");
+    var_dump($liked);
+    $salary_by_city= $app['db']->fetchAll("select address_city, address_state, avg(value) from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
+    var_dump($salary_by_state);
     return $app['twig']->render('admin_home.html.twig');
 })->bind('admin_home');
 
