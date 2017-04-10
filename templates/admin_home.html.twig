@@ -3,10 +3,50 @@
 {# this is just an example for how to use mdl-grid #}
 {% block content %}
   <div class="page-content">
-    <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--4-col">TEST</div>
-      <div class="mdl-cell mdl-cell--4-col">TEST</div>
-      <div class="mdl-cell mdl-cell--4-col">TEST</div>
+    <!-- styling -->
+    <style>
+      .chart-card {
+        width: 100%;
+      }
+
+      #c0 {
+        height: 400px;
+      }
+    </style>
+
+    <!-- included code to run the charts -->
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
+    <!-- script for actual chart creation -->
+    <script>
+      var c0 = AmCharts.makeChart("c0", {
+        "type":"pie",
+        "theme":"light",
+        "dataProvider":[
+          {"gender":"Male", "count":{{maleCount}}},
+          {"gender":"Female", "count":{{femaleCount}}},
+        ],
+        "valueField":"count",
+        "titleField":"gender",
+        "balloon":{
+          "fixedPosition":true
+        },
+        "export":{
+          "enabled":false
+        }
+      });
+    </script>
+
+    <!-- html code -->
+    <div class="chart-card mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Salary by Gender</h2>
+      </div>
+      <div class="mdl-card__supporting-text" id="c0"></div>
     </div>
   </div>
 {% endblock %}

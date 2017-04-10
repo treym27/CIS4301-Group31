@@ -28,14 +28,17 @@ $app->get('/', function () use ($app) {
 
 // the admin home page
 $app->get('/admin', function () use ($app) {
-    $avg_gender = $app['db']->fetchAll("select gender,avg(value) as avg,stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender");
+    $avg_gender = $app['db']->fetchAll("select gender,avg(value) as avg,stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender order by gender asc");
     var_dump($avg_gender);
     $liked = $app['db']->fetchAll("select * from (select likes.smid, fromacc, text, count(distinct who) as count from likes,social_media_post,makes where likes.smid = social_media_post.id and likes.smid = makes.smid group by likes.smid, fromacc, text order by count(distinct who) desc) where ROWNUM <= 10");
     var_dump($liked);
     $salary_by_city= $app['db']->fetchAll("select address_city, address_state, avg(value) as avg, stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
     var_dump($salary_by_city);
     $friends = $app['db']->fetchAll("select * from (select friend1, count(distinct friend2) as count from is_friends_with group by friend1 order by count(distinct friend2) desc) where ROWNUM <= 10");
-    return $app['twig']->render('admin_home.html.twig');
+    return $app['twig']->render('admin_home.html.twig', array(
+        $avg_gender[0]["GENDER"].'Count' => $avg_gender[0]["AVG"],
+        $avg_gender[1]["GENDER"].'Count' => $avg_gender[1]["AVG"]
+    ));
 })->bind('admin_home');
 
 // admin search page
