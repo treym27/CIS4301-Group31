@@ -30,10 +30,10 @@ $app->get('/', function () use ($app) {
 $app->get('/admin', function () use ($app) {
     $avg_gender = $app['db']->fetchAll("select gender,avg(value) as avg,stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender");
     var_dump($avg_gender);
-    $liked = $app['db']->fetchAll("select smid, who, text, count(distinct who) from likes,social_media_post where likes.smid = social_media_post.id group by smid, who, text order by count(distinct who) desc");
+    $liked = $app['db']->fetchAll("select likes.smid, fromacc, text, count(distinct who) as count from likes,social_media_post,makes where likes.smid = social_media_post.id and likes.smid = makes.smid group by likes.smid, fromacc, text order by count(distinct who) desc");
     var_dump($liked);
-    $salary_by_city= $app['db']->fetchAll("select address_city, address_state, avg(value) from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
-    var_dump($salary_by_state);
+    $salary_by_city= $app['db']->fetchAll("select address_city, address_state, avg(value) as avg, stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.email_address = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
+    var_dump($salary_by_city);
     return $app['twig']->render('admin_home.html.twig');
 })->bind('admin_home');
 
