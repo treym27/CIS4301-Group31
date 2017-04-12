@@ -9,23 +9,29 @@
         width: 100%;
       }
 
-      #c0 {
+      .chart {
         height: 400px;
+      }
+
+      #c1 {
+        height: 500px;
+        padding-bottom: 20px;
       }
     </style>
 
     <!-- included code to run the charts -->
     <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
     <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
     <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
 
     <!-- script for actual chart creation -->
     <script>
       var c0 = AmCharts.makeChart("c0", {
         "type":"pie",
-        "theme":"light",
+        "theme":"none",
         "dataProvider":[
           {"gender":"Male", "count":{{maleCount}}},
           {"gender":"Female", "count":{{femaleCount}}},
@@ -39,14 +45,60 @@
           "enabled":false
         }
       });
+      var c1 = AmCharts.makeChart("c1", {
+        "type":"serial",
+        "theme":"none",
+        "marginRight":"70",
+        "dataProvider":[
+          {% for city in salarybycity  %}
+            {"city":"{{city['ADDRESS_CITY']}}, {{city['ADDRESS_STATE']}}", "value":{{city['AVG']}}},
+          {% endfor %}
+        ],
+        "valueAxes": [{
+          "axisAlpha": 0,
+          "position": "left",
+          "title": "Average Salary",
+        }],
+        "startDuration": 1,
+        "graphs": [{
+          "balloonText": "[[city]]: <b>[[value]]</b>",
+          "fillAlphas": 0.8,
+          "lineAlpha": 0.2,
+          "type": "column",
+          "valueField": "value"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "categoryField": "city",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "tickPosition": "start",
+          "tickLength": 20
+        },
+        "export":{
+          "enabled":false
+        }
+      });
     </script>
 
     <!-- html code -->
-    <div class="chart-card mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title">
-        <h2 class="mdl-card__title-text">Salary by Gender</h2>
+    <div class="mdl-grid">
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Salary by Gender</h2>
+        </div>
+        <div class="mdl-card__supporting-text chart" id="c0"></div>
       </div>
-      <div class="mdl-card__supporting-text" id="c0"></div>
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Salary by City</h2>
+        </div>
+        <div class="mdl-card__supporting-text chart" id="c1"></div>
+      </div>
     </div>
   </div>
 {% endblock %}
