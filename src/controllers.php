@@ -78,7 +78,7 @@ $app->get('/login', function (Request $request) use ($app) {
 
 // admin login page
 $app->get('/secret/login', function (Request $request) use ($app) {
-    return $app['twig']->render('login.html.twig', array(
+    return $app['twig']->render('secret_login.html.twig', array(
         'error' => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));
