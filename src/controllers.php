@@ -64,6 +64,14 @@ $app->get('/login', function (Request $request) use ($app) {
     ));
 })->bind('login');
 
+// admin login page
+$app->get('/secret/login', function (Request $request) use ($app) {
+    return $app['twig']->render('login.html.twig', array(
+        'error' => $app['security.last_error']($request),
+        'last_username' => $app['session']->get('_security.last_username'),
+    ));
+})->bind('secret_login');
+
 // error handler
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
