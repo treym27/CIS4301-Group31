@@ -60,6 +60,12 @@ if ($argc >= 2 && $argv[1] == "delete") {
     $statement = oci_parse($connection, "create sequence seq_sm minvalue 1 start with 1 increment by 1 cache 10");
     oci_execute($statement);
     oci_free_statement($statement);
+    $statement = oci_parse($connection, "drop sequence seq_account");
+    oci_execute($statement);
+    oci_free_statement($statement);
+    $statement = oci_parse($connection, "create sequence seq_account minvalue 1337 start with 1337 increment by 13 cache 10");
+    oci_execute($statement);
+    oci_free_statement($statement);
     echo "[*] Database deleted\n";
     oci_close($connection);
     exit();
@@ -68,7 +74,7 @@ if ($argc >= 2 && $argv[1] == "delete") {
 // insert the administrator into the database first
 echo "[*] Inserting admin\n";
 $admin_pwd = password_hash("admin", PASSWORD_DEFAULT);
-$admin_insert = "insert into account values('admin', '".$admin_pwd."', 'administrator', '000-00-0000', '1-JAN-2017', '1-JAN-2017', 0, 's', 'c', 'ST', 1, 0, 'genderless')";
+$admin_insert = "insert into account values(seq_account.nextval, 'admin', '".$admin_pwd."', 'administrator', '000-00-0000', '1-JAN-2017', '1-JAN-2017', 0, 's', 'c', 'ST', 1, 0, 'genderless')";
 $statement = oci_parse($connection, $admin_insert);
 oci_execute($statement);
 oci_free_statement($statement);
@@ -90,7 +96,7 @@ $count = 0;
 $name_file = fopen("scripts/data/male_names.txt", "r") or die("Unable to open file!\n");
 while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     echo "\r\t[*] Insert #".(++$count);
-    $insert_cmd = "insert into account values('".$fname.".".$lname."@gmail.com', '";
+    $insert_cmd = "insert into account values(seq_account.nextval, '".$fname.".".$lname."@gmail.com', '";
     $insert_cmd = $insert_cmd.password_hash($fname, PASSWORD_DEFAULT)."', '";
     $insert_cmd = $insert_cmd.$fname." ".$lname."', '";
     $insert_cmd = $insert_cmd.mt_rand(100,999)."-".mt_rand(10,99)."-".mt_rand(1000,9999)."', '";
@@ -115,7 +121,7 @@ fclose($name_file);
 $name_file = fopen("scripts/data/female_names.txt", "r") or die("Unable to open file!\n");
 while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
     echo "\r\t[*] Insert #".(++$count);
-    $insert_cmd = "insert into account values('".$fname.".".$lname."@gmail.com', '";
+    $insert_cmd = "insert into account values(seq_account.nextval, '".$fname.".".$lname."@gmail.com', '";
     $insert_cmd = $insert_cmd.password_hash($fname, PASSWORD_DEFAULT)."', '";
     $insert_cmd = $insert_cmd.$fname." ".$lname."', '";
     $insert_cmd = $insert_cmd.mt_rand(100,999)."-".mt_rand(10,99)."-".mt_rand(1000,9999)."', '";
@@ -146,14 +152,14 @@ $sm_text = array(
 );
 $sm_text_size = count($sm_text)-1;
 
-$statement = oci_parse($connection, "select email_address from account");
+$statement = oci_parse($connection, "select id from account");
 oci_execute($statement);
 $trans_count = 0;
 $sm_count = 0;
 $acc_count = 0;
 echo "[*] Inserting transactions\n";
 while (($row = oci_fetch_object($statement)) != false) {
-    if ($row->EMAIL_ADDRESS === 'admin')
+    if ($row->ID === 1337)
         continue;
 
     // 2 times a month, 12 months, 6 years
@@ -174,7 +180,7 @@ while (($row = oci_fetch_object($statement)) != false) {
         $tstate = oci_parse($connection, $t0);
         oci_execute($tstate);
         echo "\r\t[*] ".++$trans_count." ".$acc_count." ".$sm_count;
-        $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+        $tstate = oci_parse($connection, "insert into makes values(1337, '".$row->ID."', ".$trans_count.", null)");
         oci_execute($tstate);
 
         // generate a random number to decide if we should social media post
@@ -187,13 +193,13 @@ while (($row = oci_fetch_object($statement)) != false) {
             $tstate = oci_parse($connection, $t1);
             oci_execute($tstate);
             echo "\r\t[*] ".++$trans_count." ".$acc_count." ".$sm_count;
-            $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", ".$sm_count.")");
+            $tstate = oci_parse($connection, "insert into makes values(1337, '".$row->ID."', ".$trans_count.", ".$sm_count.")");
             oci_execute($tstate);
         } else {
             $tstate = oci_parse($connection, $t1);
             oci_execute($tstate);
             echo "\r\t[*] ".++$trans_count." ".$acc_count." ".$sm_count;
-            $tstate = oci_parse($connection, "insert into makes values('admin', '".$row->EMAIL_ADDRESS."', ".$trans_count.", null)");
+            $tstate = oci_parse($connection, "insert into makes values(1337, '".$row->ID."', ".$trans_count.", null)");
             oci_execute($tstate);
         }
 
@@ -201,7 +207,7 @@ while (($row = oci_fetch_object($statement)) != false) {
         $tstate = oci_parse($connection, "insert into transaction values(seq_transaction.nextval, TIMESTAMP '".intval(2005+($i/$num_years))."-".($i%12 + 1)."-".(1)." 00:00:00.00', 'Rent Payment', 'complete', ".$rent.")");
         oci_execute($tstate);
         echo "\r\t[*] ".++$trans_count." ".$acc_count." ".$sm_count;
-        $tstate = oci_parse($connection, "insert into makes values('".$row->EMAIL_ADDRESS."', 'admin', ".$trans_count.", null)");
+        $tstate = oci_parse($connection, "insert into makes values('".$row->ID."', 1337, ".$trans_count.", null)");
         oci_execute($tstate);
         oci_free_statement($tstate);
 
@@ -211,7 +217,7 @@ echo "\n";
 oci_free_statement($statement);
 
 echo "[*] Inserting likes and friends\n";
-$statement = oci_parse($connection, "select email_address from account where email_address != 'admin'");
+$statement = oci_parse($connection, "select id from account where email_address != 'admin'");
 oci_execute($statement);
 $people_size = oci_fetch_all($statement, $people);
 oci_free_statement($statement);
@@ -220,10 +226,10 @@ oci_execute($statement);
 $smposts_size = oci_fetch_all($statement, $smposts);
 oci_free_statement($statement);
 for ($i = 0; $i < 10000; $i++) {
-    $p0 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
-    $p1 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
+    $p0 = $people["ID"][mt_rand(0,$people_size-1)];
+    $p1 = $people["ID"][mt_rand(0,$people_size-1)];
     while($p1 === $p0)
-        $p1 = $people["EMAIL_ADDRESS"][mt_rand(0,$people_size-1)];
+        $p1 = $people["ID"][mt_rand(0,$people_size-1)];
     $s0 = oci_parse($connection, "insert into is_friends_with values('".$p0."', '".$p1."')");
     oci_execute($s0);
     oci_free_statement($s0);
