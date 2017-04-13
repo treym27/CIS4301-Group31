@@ -38,22 +38,33 @@ $app->get('/admin/search', function () use ($app) {
 
 // user home page
 $app->get('/user', function () use ($app) {
-    return $app['twig']->render('index.html.twig');
+$token = $app['security.token_storage']->getToken();
+if (null !== $token) {
+    $user = $token->getUser();
+}
+    $topTen= $app['db']->fetchAll("select * from (select timestamp, type, value, ID from Transaction, Makes where (fromacc = 1337 or toacc= 1337) and transaction.id=makes.tid order by timestamp desc) where rownum <=10");
+    $userID= $app['db'] -> fetchAssoc("select name from account where email_address = '$user'");
+	   
+return $app['twig']->render('user.html.twig', array(
+	
+	"topTen" => $topTen,
+	"userID" => $userID
+	));
 })->bind('user_home');
 
 // user timeline
 $app->get('/user/timeline', function () use ($app) {
-    return $app['twig']->render('index.html.twig');
+    return $app['twig']->render('user_timeline.html.twig');
 })->bind('user_timeline');
 
 // user profile page
 $app->get('/user/{email}', function ($email) use ($app) {
-    return $app['twig']->render('index.html.twig');
+    return $app['twig']->render('user_profile.html.twig');
 })->bind('user_profile');
 
 // user edit page (can only view your own, or admin can view all)
 $app->get('/user/edit/{email}', function ($email) use ($app) {
-    return $app['twig']->render('index.html.twig');
+    return $app['twig']->render('update_info.html.twig');
 })->bind('user_edit');
 
 // login page
