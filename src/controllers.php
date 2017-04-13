@@ -80,7 +80,7 @@ $app->get('/user/{id}', function ($id) use ($app) {
 })->bind('user_profile');
 
 // PAGE 2 EDIT USER INFO !!!!!
-$app->get('/user/acc_info', function () use ($app) {
+$app->get('/user/acc_info{id}', function ($id) use ($app) {
     $token = $app['security.token_storage']->getToken();
     if (null !== $token) {
         $user = $token -> getUser();
