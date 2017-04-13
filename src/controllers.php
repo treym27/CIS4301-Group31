@@ -53,7 +53,16 @@ $app->get('/user/{email}', function ($email) use ($app) {
 
 // PAGE 2 EDIT USER INFO !!!!!
 $app->get('/acc_info', function () use ($app) {
-    return $app['twig']->render('acc_info.html.twig');
+    $token = $app['security.token_storage']->getToken();
+    if (null !== $token) {
+        $user = $token->getUser();
+        $name = $app['db']->fetchAssoc("select name, DOB, address_street, phone_number, email_address, password from account where email_address = '$user'");
+    return $app['twig']->render('acc_info.html.twig', array(
+    'name' => $name
+    )); 
+    } else {
+        $app->abort(403);
+    }
 })->bind('acc_info');
 
 // user edit page (can only view your own, or admin can view all)
