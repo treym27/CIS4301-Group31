@@ -34,6 +34,7 @@ $app->get('/admin', function () use ($app) {
     $salary_by_city = $app['db']->fetchAll("select address_city, address_state, avg(value) as avg, stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.id = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
     $friends = $app['db']->fetchAll("select * from (select friend1, count(distinct friend2) as count from is_friends_with group by friend1 order by count(distinct friend2) desc) where ROWNUM <= 10");
     $money = $app['db']->fetchAll("select * from (select fromacc, pos-neg as total from (select fromacc, sum(value) as neg from makes,transaction where makes.tid = transaction.id group by fromacc), (select toacc, sum(value) as pos from makes,transaction where makes.tid = transaction.id group by toacc) where fromacc = toacc and fromacc != 1337 order by pos-neg desc) where rownum <= 10");
+    $year = $app['db']->fetchAll("select * from (select extract(year from dob) as year, avg(value) as avg from account,makes,transaction where account.id = makes.toacc and makes.tid = transaction.id and makes.toacc != 1337 and transaction.memo = 'Salary Payment' group by extract(year from dob) order by avg(value) desc) where rownum <= 10");
     return $app['twig']->render('admin_home.html.twig', array(
         $avg_gender[0]["GENDER"].'Count' => $avg_gender[0]["AVG"],
         $avg_gender[1]["GENDER"].'Count' => $avg_gender[1]["AVG"],
@@ -42,6 +43,7 @@ $app->get('/admin', function () use ($app) {
         'likes' => $liked,
         'pending' => $pending,
         'money' => $money,
+        'years' => $year,
     ));
 })->bind('admin_home');
 
