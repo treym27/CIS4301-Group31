@@ -47,11 +47,11 @@
 	<a class="mdl-navigation__link"  href="{{ url('user_timeline')}}>News feed</a>
         <nav class="mdl-navigation">
           {% if not global.user %}
-	    <a class="mdl-navigation__link" href="{{ url('user_acc_info.html.twig') }}">Account</a>
+	    <a class="mdl-navigation__link" href="{{ url('user_acc_info') }}">Account</a>
             <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
             
           {% else %}
-	    <a class="mdl-navigation__link" href="{{ url('user_acc_info.html.twig') }}">Account</a>
+	    <a class="mdl-navigation__link" href="{{ url('user_acc_info') }}">Account</a>
             <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
 
           {% endif %}
