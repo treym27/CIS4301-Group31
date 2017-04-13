@@ -53,7 +53,7 @@ $app->get('/user/{email}', function ($email) use ($app) {
 
 // PAGE 2 EDIT USER INFO (TREY)
 $app->get('/user/acc_info', function () use ($app) {
-    return $app['twig']->render('index.html.twig');
+    return $app['twig']->render('acc_info.html.twig');
 })->bind('acc_info');
 
 // user edit page (can only view your own, or admin can view all)
