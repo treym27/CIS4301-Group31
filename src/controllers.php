@@ -57,8 +57,8 @@ $app->get('/user/acc_info', function () use ($app) {
     if (null !== $token) {
         $user = $token -> getUser();
         $name = $app['db'] -> fetchAssoc("select name, DOB, address_street, phone_number, email_address, password from account where email_address = '$user'");
-    return $app['twig'] -> render('acc_info.html.twig', array(
-    'name' => $name
+    return $app['twig'] -> render('user_acc_info.html.twig', array(
+    "name" => $name
     )); 
     } else {
         $app->abort(403);
