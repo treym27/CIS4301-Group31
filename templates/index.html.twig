@@ -4,15 +4,15 @@
   <div class="page-content"><span style="color: green; font-size: 100px;">
     Hello user! Welcome to the MJGT Banking Application!
   </div>
-  <?php
-echo ' 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://i.ytimg.com/vi/EmNPxW-8qD4/hqdefault.jpg">
-<html>
-<img src="/images/image1.png" width="280" height="125" title="Logo of a company" alt="Logo of a company" />
-
-</html>
-';
+<html><head><title><?php echo "cool title";?></title></head>
+<body
+<?php 
+$image_url='https://i.ytimg.com/vi/EmNPxW-8qD4/hqdefault.jpg';
 ?>
+
+<img src="<?php echo $image_url;?>">
+
+<br><h1>Got me?</h1>
 {% endblock %}
 
 {# this is just an example for how to use mdl-grid #}
