@@ -50,10 +50,11 @@
             <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
             
           {% else %}
+	    <a class="mdl-navigation__link" href="{{ url('user_acc_info') }}">Account</a>
             <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
 
           {% endif %}
-	    <a class="mdl-navigation__link" href="{{ url('user_acc_info') }}">Account</a>
+	   
 
         </nav>
       </div>
