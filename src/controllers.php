@@ -87,7 +87,7 @@ $app->get('/user/acc_info', function () use ($app) {
         
     } 
     $name = $app['db'] -> fetchAssoc("select name, DOB, address_street, phone_number, email_address, password from account where email_address = '$user'");
-    return $app['twig'] -> render('base.html.twig', array(
+    return $app['twig'] -> render('user_acc_info.html.twig', array(
     "name" => $name
     )); 
 })->bind('user_acc_info'); 
