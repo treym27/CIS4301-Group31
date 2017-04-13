@@ -219,6 +219,7 @@
                 <th>ID</th>
                 <th class="mdl-data-table__cell--non-numeric">Name</th>
                 <th class="mdl-data-table__cell--non-numeric">Email</th>
+                <th class="mdl-data-table__cell--non-numeric">Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -227,6 +228,7 @@
                 <td>{{pend['ID']}}</td>
                 <td class="mdl-data-table__cell--non-numeric">{{pend['NAME']}}</td>
                 <td class="mdl-data-table__cell--non-numeric">{{pend['EMAIL_ADDRESS']}}</td>
+                <td class="mdl-data-table__cell--non-numeric"><a href="{{url('user_edit', {id: pend['ID']})}}">Edit</a></td>
               </tr>
             {% endfor %}
             </tbody>

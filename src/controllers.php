@@ -61,12 +61,12 @@ $app->get('/user/timeline', function () use ($app) {
 })->bind('user_timeline');
 
 // user profile page
-$app->get('/user/{email}', function ($email) use ($app) {
+$app->get('/user/{id}', function ($email) use ($app) {
     return $app['twig']->render('index.html.twig');
 })->bind('user_profile');
 
 // user edit page (can only view your own, or admin can view all)
-$app->get('/user/edit/{email}', function ($email) use ($app) {
+$app->get('/user/edit/{id}', function ($email) use ($app) {
     return $app['twig']->render('index.html.twig');
 })->bind('user_edit');
 
