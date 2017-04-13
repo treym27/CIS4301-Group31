@@ -1,6 +1,6 @@
 CREATE TABLE account
 (id integer not null,
- email_address varchar2(255) not null,
+ email_address varchar2(255) unique,
  password varchar2(255) not null,
  name varchar2(255) not null,
  SSN char(11),
