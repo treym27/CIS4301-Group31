@@ -55,9 +55,9 @@ $app->get('/user/{email}', function ($email) use ($app) {
 $app->get('/user/acc_info', function () use ($app) {
     $token = $app['security.token_storage']->getToken();
     if (null !== $token) {
-        $user = $token->getUser();
-        $name = $app['db']->fetchAssoc("select * from account where email_address = '$user'");
-    return $app['twig']->render('acc_info.html.twig', array(
+        $user = $token -> getUser();
+        $name = $app['db'] -> fetchAssoc("select name from account where email_address = '$user'");
+    return $app['twig'] -> render('acc_info.html.twig', array(
     'name' => $name
     )); 
     } else {
