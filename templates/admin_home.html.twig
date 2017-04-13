@@ -15,7 +15,6 @@
 
       #c1 {
         height: 500px;
-        padding-bottom: 20px;
       }
     </style>
 
@@ -48,7 +47,9 @@
       var c1 = AmCharts.makeChart("c1", {
         "type":"serial",
         "theme":"none",
-        "marginRight":"70",
+        "autoMargins": false,
+        "marginBottom": 75,
+        "marginLeft": 75,
         "dataProvider":[
           {% for city in salarybycity  %}
             {"city":"{{city['ADDRESS_CITY']}}, {{city['ADDRESS_STATE']}}", "value":{{city['AVG']}}},
