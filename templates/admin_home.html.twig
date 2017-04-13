@@ -13,8 +13,8 @@
         height: 400px;
       }
 
-      #c1 {
-        height: 500px;
+      .pending {
+        margin: auto;
       }
     </style>
 
@@ -84,10 +84,155 @@
           "enabled":false
         }
       });
+      var c2 = AmCharts.makeChart("c2", {
+        "type":"serial",
+        "theme":"none",
+        "autoMargins": false,
+        "marginBottom": 75,
+        "marginLeft": 75,
+        "dataProvider":[
+          {% for friend in friends %}
+            {"friend":"{{friend['FRIEND1']}}", "value":{{friend['COUNT']}}},
+          {% endfor %}
+        ],
+        "valueAxes": [{
+          "axisAlpha": 0,
+          "position": "left",
+          "title": "Number of Friends",
+        }],
+        "startDuration": 1,
+        "graphs": [{
+          "balloonText": "[[friend]]: <b>[[value]]</b>",
+          "fillAlphas": 0.8,
+          "lineAlpha": 0.2,
+          "type": "column",
+          "valueField": "value"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "categoryField": "friend",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "tickPosition": "start",
+          "tickLength": 20
+        },
+        "export":{
+          "enabled":false
+        }
+      });
+      var c3 = AmCharts.makeChart("c3", {
+        "type":"serial",
+        "theme":"none",
+        "autoMargins": false,
+        "marginBottom": 75,
+        "marginLeft": 75,
+        "dataProvider":[
+          {% for like in likes %}
+            {"sm":"{{like['FROMACC']}} to {{like['TOACC']}}", "text":"{{like['TEXT']}}", "value":{{like['COUNT']}}},
+          {% endfor %}
+        ],
+        "valueAxes": [{
+          "axisAlpha": 0,
+          "position": "left",
+          "title": "Number of Likes",
+        }],
+        "startDuration": 1,
+        "graphs": [{
+          "balloonText": "[[sm]]: [[text]] - <b>[[value]]</b>",
+          "fillAlphas": 0.8,
+          "lineAlpha": 0.2,
+          "type": "column",
+          "valueField": "value"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "categoryField": "sm",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "tickPosition": "start",
+          "tickLength": 20
+        },
+        "export":{
+          "enabled":false
+        }
+      });
+      var c4 = AmCharts.makeChart("c4", {
+        "type":"serial",
+        "theme":"none",
+        "autoMargins": false,
+        "marginBottom": 75,
+        "marginLeft": 75,
+        "dataProvider":[
+          {% for m in money %}
+            {"money":"{{m['FROMACC']}}", "value":{{m['TOTAL']}}},
+          {% endfor %}
+        ],
+        "valueAxes": [{
+          "axisAlpha": 0,
+          "position": "left",
+          "title": "Total Money in Bank",
+        }],
+        "startDuration": 1,
+        "graphs": [{
+          "balloonText": "[[money]]: <b>[[value]]</b>",
+          "fillAlphas": 0.8,
+          "lineAlpha": 0.2,
+          "type": "column",
+          "valueField": "value"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "categoryField": "money",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "tickPosition": "start",
+          "tickLength": 20
+        },
+        "export":{
+          "enabled":false
+        }
+      });
     </script>
 
     <!-- html code -->
     <div class="mdl-grid">
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Pending Accounts</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+          <table class="mdl-data-table mdl-js-data-table pending">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th class="mdl-data-table__cell--non-numeric">Name</th>
+                <th class="mdl-data-table__cell--non-numeric">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for pend in pending %}
+              <tr>
+                <td>{{pend['ID']}}</td>
+                <td class="mdl-data-table__cell--non-numeric">{{pend['NAME']}}</td>
+                <td class="mdl-data-table__cell--non-numeric">{{pend['EMAIL_ADDRESS']}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
           <h2 class="mdl-card__title-text">Salary by Gender</h2>
@@ -99,6 +244,24 @@
           <h2 class="mdl-card__title-text">Salary by City</h2>
         </div>
         <div class="mdl-card__supporting-text chart" id="c1"></div>
+      </div>
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Number of Friends</h2>
+        </div>
+        <div class="mdl-card__supporting-text chart" id="c2"></div>
+      </div>
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Social Media Post Likes</h2>
+        </div>
+        <div class="mdl-card__supporting-text chart" id="c3"></div>
+      </div>
+      <div class="mdl-cell chart-card mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Total Money in Bank</h2>
+        </div>
+        <div class="mdl-card__supporting-text chart" id="c4"></div>
       </div>
     </div>
   </div>
