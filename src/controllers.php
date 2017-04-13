@@ -51,6 +51,11 @@ $app->get('/user/{email}', function ($email) use ($app) {
     return $app['twig']->render('index.html.twig');
 })->bind('user_profile');
 
+// PAGE 2 EDIT USER INFO (TREY)
+$app->get('/user/timeline', function () use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('acc_info');
+
 // user edit page (can only view your own, or admin can view all)
 $app->get('/user/edit/{email}', function ($email) use ($app) {
     return $app['twig']->render('index.html.twig');
