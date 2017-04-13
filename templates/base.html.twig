@@ -46,6 +46,7 @@
         <nav class="mdl-navigation">
           {% if not global.user %}
             <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
+            <a class="mdl-navigation__link" href="{{ url('acc_info') }}">Account</a>
             
           {% else %}
             <a class="mdl-navigation__link" href="{{ url('acc_info') }}">Account</a>
