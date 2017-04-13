@@ -31,7 +31,6 @@
           <!-- just a place to show login info, won't be seen on small screens -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
             {% if not global.user %}
-              <a class="mdl-navigation__link" href="{{ url('acc_info') }}">Account</a>
               <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
             {% else %}
               <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
@@ -46,8 +45,8 @@
         <span class="mdl-layout-title">Banking App</span>
         <nav class="mdl-navigation">
           {% if not global.user %}
-            <a class="mdl-navigation__link" href="{{ url('acc_info') }}">Account</a>
             <a class="mdl-navigation__link" href="{{ url('login') }}">Login</a>
+            <a class="mdl-navigation__link" href="{{ url('acc_info') }}">Account</a>
           {% else %}
             <a class="mdl-navigation__link" href="{{ url('admin_logout') }}">Logout</a>
           {% endif %}
