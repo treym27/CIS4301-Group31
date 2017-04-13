@@ -1,5 +1,6 @@
 CREATE TABLE account
-(email_address varchar2(255) not null,
+(id integer not null,
+ email_address varchar2(255) not null,
  password varchar2(255) not null,
  name varchar2(255) not null,
  SSN char(11),
@@ -12,16 +13,16 @@ CREATE TABLE account
  type integer not null,
  phone_number integer,
  gender varchar2(20),
- PRIMARY KEY (email_address)
+ PRIMARY KEY (id)
 );
 
 
 CREATE TABLE is_friends_with
-(friend1 varchar2(255) not null,
- friend2 varchar2(255) not null,
+(friend1 integer not null,
+ friend2 integer not null,
  PRIMARY KEY (friend1, friend2),
- FOREIGN KEY (friend1) references Account (email_address),
- FOREIGN KEY (friend2) references Account (email_address)
+ FOREIGN KEY (friend1) references Account (id),
+ FOREIGN KEY (friend2) references Account (id)
 );
 
 CREATE TABLE Reply
@@ -40,10 +41,10 @@ CREATE TABLE Social_Media_Post
 );
 
 CREATE TABLE Likes
-(who varchar2(255) not null,
+(who integer not null,
  smid integer not null,
  PRIMARY KEY (who, smid),
- FOREIGN KEY (who) references Account (email_address),
+ FOREIGN KEY (who) references Account (id),
  FOREIGN KEY (smid) references Social_Media_Post (ID)
 );
 
@@ -57,29 +58,30 @@ CREATE TABLE Transaction
 );
 
 CREATE TABLE Posts
-(who varchar2(255) not null,
+(who integer not null,
  message integer not null,
  sm_post integer not null,
  PRIMARY KEY (who, message, sm_post),
- FOREIGN KEY (who) references Account (email_address),
+ FOREIGN KEY (who) references Account (id),
  FOREIGN KEY (message) references Reply (ID),
  FOREIGN KEY (sm_post) references Social_Media_Post(ID)
 );
 
 CREATE TABLE Makes
-(fromacc varchar2(255) not null,
- toacc varchar2(255) not null,
+(fromacc integer not null,
+ toacc integer not null,
  tid integer not null,
  smid integer,
  PRIMARY KEY (tid),
- FOREIGN KEY (fromacc) references Account (email_address),
- FOREIGN KEY (toacc) references Account (email_address),
+ FOREIGN KEY (fromacc) references Account (id),
+ FOREIGN KEY (toacc) references Account (id),
  FOREIGN KEY (tid) references Transaction (ID),
  FOREIGN KEY (smid) references Social_Media_Post (ID)
 );
 
 create sequence seq_transaction minvalue 1 start with 1 increment by 1 cache 10;
 create sequence seq_sm minvalue 1 start with 1 increment by 1 cache 10;
+create sequence seq_account minvalue 1337 start with 1337 increment by 13 cache 10;
 
 -- drop table Makes;
 -- drop table Posts;
@@ -91,4 +93,5 @@ create sequence seq_sm minvalue 1 start with 1 increment by 1 cache 10;
 -- drop table Account;
 -- drop sequence seq_transaction;
 -- drop sequence seq_sm;
+-- drop sequence seq_account;
 
