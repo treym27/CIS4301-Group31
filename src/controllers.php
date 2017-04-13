@@ -28,7 +28,23 @@ $app->get('/', function () use ($app) {
 
 // the admin home page
 $app->get('/admin', function () use ($app) {
-    return $app['twig']->render('index.html.twig');
+    $pending = $app['db']->fetchAll("select * from account where account.status = 1");
+    $avg_gender = $app['db']->fetchAll("select gender,avg(value) as avg,stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.id = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by gender order by gender asc");
+    $liked = $app['db']->fetchAll("select * from (select likes.smid, fromacc, toacc, text, count(distinct who) as count from likes,social_media_post,makes where likes.smid = social_media_post.id and likes.smid = makes.smid group by likes.smid, fromacc, toacc, text order by count(distinct who) desc) where ROWNUM <= 10");
+    $salary_by_city = $app['db']->fetchAll("select address_city, address_state, avg(value) as avg, stddev(value) as stddev from account,makes,transaction where account.type = 0 and account.id = makes.toacc and makes.tid = transaction.id and transaction.memo = 'Salary Payment' group by account.address_city, account.address_state order by avg(value) desc");
+    $friends = $app['db']->fetchAll("select * from (select friend1, count(distinct friend2) as count from is_friends_with group by friend1 order by count(distinct friend2) desc) where ROWNUM <= 10");
+    $money = $app['db']->fetchAll("select * from (select fromacc, pos-neg as total from (select fromacc, sum(value) as neg from makes,transaction where makes.tid = transaction.id group by fromacc), (select toacc, sum(value) as pos from makes,transaction where makes.tid = transaction.id group by toacc) where fromacc = toacc and fromacc != 1337 order by pos-neg desc) where rownum <= 10");
+    $year = $app['db']->fetchAll("select * from (select extract(year from dob) as year, avg(value) as avg from account,makes,transaction where account.id = makes.toacc and makes.tid = transaction.id and makes.toacc != 1337 and transaction.memo = 'Salary Payment' group by extract(year from dob) order by avg(value) desc) where rownum <= 10");
+    return $app['twig']->render('admin_home.html.twig', array(
+        $avg_gender[0]["GENDER"].'Count' => $avg_gender[0]["AVG"],
+        $avg_gender[1]["GENDER"].'Count' => $avg_gender[1]["AVG"],
+        'salarybycity' => $salary_by_city,
+        'friends' => $friends,
+        'likes' => $liked,
+        'pending' => $pending,
+        'money' => $money,
+        'years' => $year,
+    ));
 })->bind('admin_home');
 
 // admin search page
@@ -58,13 +74,14 @@ $app->get('/user/timeline', function () use ($app) {
 })->bind('user_timeline');
 
 // user profile page
-$app->get('/user/{email}', function ($email) use ($app) {
-    return $app['twig']->render('user_profile.html.twig');
+
+$app->get('/user/{id}', function ($id) use ($app) {
+    return $app['twig']->render('index.html.twig');
 })->bind('user_profile');
 
 // user edit page (can only view your own, or admin can view all)
-$app->get('/user/edit/{email}', function ($email) use ($app) {
-    return $app['twig']->render('update_info.html.twig');
+$app->get('/user/edit/{id}', function ($id) use ($app) {
+    return $app['twig']->render('index.html.twig');
 })->bind('user_edit');
 
 // login page
@@ -77,7 +94,7 @@ $app->get('/login', function (Request $request) use ($app) {
 
 // admin login page
 $app->get('/secret/login', function (Request $request) use ($app) {
-    return $app['twig']->render('login.html.twig', array(
+    return $app['twig']->render('secret_login.html.twig', array(
         'error' => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));

@@ -79,6 +79,17 @@ $statement = oci_parse($connection, $admin_insert);
 oci_execute($statement);
 oci_free_statement($statement);
 
+$city_state = array(
+    "'Gainesville', 'FL', ",
+    "'Orlando', 'FL', ",
+    "'Miami', 'FL', ",
+    "'Boulder', 'CO', ",
+    "'Denver', 'CO', ",
+    "'Santa Barbara', 'CA', ",
+    "'San Diego', 'CA', ",
+);
+$city_state_size = count($city_state)-1;
+
 // generate accounts from the names file
 echo "[*] Inserting users\n";
 $count = 0;
@@ -95,9 +106,8 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
         $insert_cmd = $insert_cmd."1, '";
     else
         $insert_cmd = $insert_cmd."0, '";
-    $insert_cmd = $insert_cmd."street', '";
-    $insert_cmd = $insert_cmd."city', '";
-    $insert_cmd = $insert_cmd."ST', ";
+    $insert_cmd = $insert_cmd."street', ";
+    $insert_cmd = $insert_cmd.$city_state[mt_rand(0,$city_state_size)];
     $insert_cmd = $insert_cmd."0, ";
     $insert_cmd = $insert_cmd.mt_rand(1000000000,9999999999).", '";
     $insert_cmd = $insert_cmd."male')";
@@ -121,9 +131,8 @@ while ((list ($fname, $lname) = fscanf($name_file, "%s %s")) != false) {
         $insert_cmd = $insert_cmd."1, '";
     else
         $insert_cmd = $insert_cmd."0, '";
-    $insert_cmd = $insert_cmd."street', '";
-    $insert_cmd = $insert_cmd."city', '";
-    $insert_cmd = $insert_cmd."ST', ";
+    $insert_cmd = $insert_cmd."street', ";
+    $insert_cmd = $insert_cmd.$city_state[mt_rand(0,$city_state_size)];
     $insert_cmd = $insert_cmd."0, ";
     $insert_cmd = $insert_cmd.mt_rand(1000000000,9999999999).", '";
     $insert_cmd = $insert_cmd."female')";
