@@ -52,7 +52,7 @@ $app->get('/user/{email}', function ($email) use ($app) {
 })->bind('user_profile');
 
 // PAGE 2 EDIT USER INFO !!!!!
-$app->get('/user/acc_info', function () use ($app) {
+/*$app->get('/user/acc_info', function () use ($app) {
     $token = $app['security.token_storage']->getToken();
     if (null !== $token) {
         $user = $token -> getUser();
@@ -63,6 +63,10 @@ $app->get('/user/acc_info', function () use ($app) {
     } else {
         $app->abort(403);
     } 
+})->bind('user_acc_info'); */
+
+$app->get('/user/acc_info', function () use ($app) {
+    return $app['twig'] -> render('user_acc_info.html.twig');
 })->bind('user_acc_info');
 
 // user edit page (can only view your own, or admin can view all)
